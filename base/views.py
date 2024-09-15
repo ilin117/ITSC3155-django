@@ -5,6 +5,7 @@ from .forms import RoomForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -29,6 +30,10 @@ def loginPage(request):
     context = {}
     return render(request, 'base/login_register.html', context)
 
+def logoutUser(request):
+    logout(request)
+    return redirect("home")
+
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
 
@@ -43,6 +48,7 @@ def room(request, pk):
     context = {"room": room}
     return render(request, 'base/room.html', context)
 
+@login_required(login_url='/login')
 def createRoom(request):
     form = RoomForm()
     if request.method == "POST":
